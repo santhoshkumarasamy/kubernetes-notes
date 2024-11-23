@@ -123,7 +123,7 @@ Ways to create a pod
 
 ------
 
-### Create a nginx pod
+#### Create a nginx pod
  
 Note : run the below command when a cluster is running
 ```
@@ -193,7 +193,7 @@ kubectl run nginx --image=nginx --dry-run=client -o yaml > dry-run.yaml
 ```
 
 Getting pod details
-
+```
 kubectl describe pod nginx-pod
 
 Getting pod labels
@@ -208,3 +208,140 @@ kubectl get pods -o wide
 this can also be used with get nodes command
 
 kubectl get nodes -o wide
+
+```
+
+### Day 8
+
+Replication controller 
+- Application does not crash
+- manages replica of a pod
+
+The replication controller file basically have the details of the pods and no of replicas to be maintained
+```
+# Make sure no pods are running
+
+kubectl apply -f ./replicationController.yaml
+
+```
+
+Difference between replication controller and replica set is
+replication controller is a legacy version
+Replication controller can only manage the pods which are created as part of it, existing pods can not be included
+
+But with replica set we can manage the existing pods which are not part of it
+
+Field for this use is 
+
+```
+selector:
+  matchLabels:
+    env: demo
+```
+
+So we have create a replica set config it throws the below error, saying the version is wrong
+![](./day8/replica%20set%20iniatial%20erro.png)
+
+But why
+
+![](./day8/explain%20rs.png)
+
+here this says the version is V1 which we had in the file.
+So thats not the right version cause its part of the group "apps"
+
+SO the version should be "apps/v1"
+
+```
+# delete the existing replica controller
+
+kubectl delete rc nginx-rc
+
+#or
+
+kubectl delete rc/nginx-rc
+
+```
+
+
+Now how to change the replication number in replica set
+
+1. Change the config file and apply
+2. Edit the live replica set 
+```
+kubectl edit rs nginx-rs
+```
+3. Use the kubectl imperative way- using command line 
+```
+kubectl scale --replicas=3 rs nginx-rs
+```
+
+#### Deployment
+
+for example you are running your v1 pods with replica set and you want to update the pods to v2
+
+now the replica set will delete the all the pods and create new pods with newer version
+
+this will disrupt the active user
+
+So this were deployment comes in
+
+"Deployment" wont remove all the pods at same time
+it will start from a single pod
+updating one pod and the network traffic will be redirected to other pods 
+once the upgrade is completed it will move to next pod and the upgraded pod will be added to replica set 
+it will start to recieve traffic
+
+- undo the deployment
+- roll out to particular version
+
+#### Delete the existing replica set
+
+```
+kubectl delete rs nginx-rs
+```
+
+#### create deployment configs (manifest)
+
+```
+kubectl get deployments
+
+#OR
+
+kubectl get deploy
+
+```
+
+#### Get all the things created
+```
+kubectl get all
+```
+
+![](./notes/Get%20All.png)
+
+#### How to change the image of the pod in the deployment
+
+```
+kubectl set image deploy/nginx-deployment \
+nginx=nginx:1.9.1
+
+#here the "nginx" means the container name defined the deployment config
+
+kubectl describe deploy/nginx-deployment
+
+kubectl edit deploy/nginx-deployment
+```
+
+#### Now we made changes, to view the history 
+
+```
+kubectl rollout history deploy/nginx-deployment
+```
+![](./notes/Rollout%20history.png)
+
+#### Can we undo the changes
+
+```
+kubectl rollout undo deploy/nginx-deployment
+```
+
+### Day 9
