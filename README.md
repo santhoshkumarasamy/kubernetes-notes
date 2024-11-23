@@ -345,3 +345,51 @@ kubectl rollout undo deploy/nginx-deployment
 ```
 
 ### Day 9
+
+#### Services
+
+Cluster IP
+nodeport
+external names
+load balancer
+
+
+##### Node port
+The application will be exposed on specific port to the external users
+Range : 30000 to 32767
+
+Each service will access the node port and it will have its own internal cluster port 
+
+Target port
+This were the application pod is lisenting on internally
+this not exposed
+
+![](./notes/Node%20Port.png)
+
+Delete a node port service
+
+```
+kubectl delete service/nodeport-svc
+```
+
+##### Cluster IP
+
+When a pod is deleted and new one created the IP address will be changed
+
+So to interact with a service (backend cluster) we need a IP address which wont change so other internal service (DB cluster / front end) can access the service 
+
+![](./notes/Cluster%20ip.png)
+
+```
+alias 'k=kubectl'
+# to get the endpoints of the services
+k get ep
+```
+
+##### Load balancer
+
+Load balancer service needs an external load balancer 
+
+##### External Name
+
+It basically for giving an internal dns name for a service
