@@ -1,0 +1,18 @@
+# this is a comment
+
+employee:
+  name: ksk
+  num: 23
+  dec: 2.3
+
+# for list add a dash - 
+employee:
+ - name: ksk
+   num: 23
+   dec: 2.3
+ - name: ksk
+   num: 23
+   dec: 2.3
+   sub-list:
+   - i: 1
+   - i: 2
