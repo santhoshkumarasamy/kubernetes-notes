@@ -1,3 +1,5 @@
+https://github.com/piyushsachdeva/CKA-2024
+
 ![Docker Architecture](./notes/Docker-Architecture.png "Docker Architecture")
 
 
@@ -393,3 +395,97 @@ Load balancer service needs an external load balancer
 ##### External Name
 
 It basically for giving an internal dns name for a service
+
+### Day 10
+
+#### Namespaces
+
+If no namespace is mentioned all the things will be created in "default" namespace
+
+The control plane things will be created in "kube-system" namespace
+
+the pods in a same namespace can communicate easily by using the hostname,but if the pods are in diferent namespaces then they need to use FQDN - Fully Qualified Domain Name
+
+
+To get all the namespaces
+```
+kubectl get ns
+
+#or
+
+k get namespaces
+```
+
+now to get the things inside a namespace
+```
+k get all --namespace=default
+
+#or
+
+k get all -n default
+
+# -n stands for namespace
+
+#to create namespace
+kubeclt create ns demo
+#to delete a namespace
+kubectl delete ns/demo
+
+```
+##### Creating a deployment in imperative way in cli
+
+```
+# dry - run command
+kubectl create deploy nginx-deploy --image=nginx -r 1 -n demo --dry-run=client -o yaml
+
+k create deploy nginx-deploy --image=nginx -r 1 -n demo
+
+```
+
+The pods in the namespace can communicate with each other 
+
+let scale it
+
+```
+k scale --replicas 2 deploy/nginx-deploy -n demo
+k scale --replicas 2 deploy/nginx-test
+```
+
+now that we hace scaled it,
+lets expose this service
+
+```
+k expose --name svc-demo deploy/nginx-deploy --port=80 -n demo
+
+k expose --name svc-default deploy/nginx-test --port=80 
+
+```
+
+now if you try to curl the service name in the pods it wont work
+
+but the ip address of the services will still be accessble
+
+for example inside the pods of each namespace
+
+this will work
+curl 10.244.2.1 -- ip address of the service in the another namespace
+
+but this wont work
+curl svc-demo
+
+```
+cat /etc/resolv.conf
+```
+![](./notes/Cat%20Resolv%20conf.png)
+
+so to reach the service, we have to give the FQDN
+```
+[service-name].[namespace].svc.cluster.local
+```
+
+so this means
+
+```
+curl svc-demo.demo.svc.cluster.local
+```
+this will work in the default namespace pod to call the service in demo namespace
