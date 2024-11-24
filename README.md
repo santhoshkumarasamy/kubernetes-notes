@@ -1,5 +1,5 @@
 https://github.com/piyushsachdeva/CKA-2024
-
+### Day 1
 ![Docker Architecture](./notes/Docker-Architecture.png "Docker Architecture")
 
 
@@ -42,40 +42,40 @@ has networking tables
 
 request -> authenticate -> validate -> api server
 
-## Kubernetes Architecture
+##### Kubernetes Architecture
 
 ![image](https://github.com/piyushsachdeva/CKA-2024/assets/40286378/f15fbf28-5d18-4469-8a28-edd13678cbbf)
 
-## Master/Control plane Node V/s Worker Node ( Node is nothing but a Virtual machine)
+##### Master/Control plane Node V/s Worker Node ( Node is nothing but a Virtual machine)
 
 ![image](https://github.com/piyushsachdeva/CKA-2024/assets/40286378/ef04ec3d-9f3a-4ac5-8a6a-31e877bfabf3)
 
-## ApiServer :- Client interacts with the cluster using ApiServer
+##### ApiServer :- Client interacts with the cluster using ApiServer
 
 ![image](https://github.com/piyushsachdeva/CKA-2024/assets/40286378/b8aeb299-9fc9-49da-9c87-0a6eb948ebd1)
 
-## Scheduler: decide which pod to be scheduled on which node based on different factors
+##### Scheduler: decide which pod to be scheduled on which node based on different factors
 
 ![image](https://github.com/piyushsachdeva/CKA-2024/assets/40286378/189208b6-a01e-4e3f-baf9-ae9a9d0f3daf)
 
-## Controller Manager
+##### Controller Manager
 
 ![image](https://github.com/piyushsachdeva/CKA-2024/assets/40286378/9aece452-6d76-452f-9c89-0f7825151312)
 
-## ETCD Server - Key value database that stores the cluster state and configuration
+##### ETCD Server - Key value database that stores the cluster state and configuration
 
 ![image](https://github.com/piyushsachdeva/CKA-2024/assets/40286378/81e037e3-78f0-41a7-8589-f2b4ec3af511)
 
-## Kubelet - Node-level agent that helps container management and receives instructions from Api server
+##### Kubelet - Node-level agent that helps container management and receives instructions from Api server
 
 ![image](https://github.com/piyushsachdeva/CKA-2024/assets/40286378/bd178509-c49c-4206-bc11-147ac91d2713)
 
-## Kube proxy - Pod to pod communication
+##### Kube proxy - Pod to pod communication
 
 ![image](https://github.com/piyushsachdeva/CKA-2024/assets/40286378/e99ec3f5-5d73-4554-99d4-a7905d463f64)
 
 
-### Installation of Kind
+#### Installation of Kind
 
 https://kind.sigs.k8s.io/
 
@@ -489,3 +489,71 @@ so this means
 curl svc-demo.demo.svc.cluster.local
 ```
 this will work in the default namespace pod to call the service in demo namespace
+
+
+### Day 11
+
+#### Multi container pods
+
+##### Init container
+
+"Command" is to specify what you are going to run and you pass the actual command as an argument in "args", like below
+```yaml
+command: ['sh','-c']
+args: ['ls ;echo hi']
+
+```
+";" semi colon is to split the commands
+
+you can also specify the argument inside the command itself
+
+```yaml
+command: ['sh','-c','echo hi']
+```
+![](./notes/init%20containers.png)
+
+So now the pod is waiting for the init container to complete
+
+to see the logs 
+```
+k logs pods/app-pod
+```
+![](./notes/day11%20pod%20log.png)
+
+how to get the init container log 
+
+```
+# here in the below command '-c' stands for container from which the logs should be showed cause a pod can have multiple container, 'init-my-service' is the name of the initcontainer
+k logs pods/app-pod -c init-my-service
+```
+now we need to create a deployment and service to expose the deployment so the init container can complete the task
+```
+k create deploy nginx-deploy --image=nginx --port=80
+k expose deploy nginx-deploy --name myservice --port 80
+```
+
+now the service is exposed, the init container will do its job and the main container wil start
+
+```
+k exec -it app-pod -- printenv
+# or
+k exec -it app-pod -- 'env'
+# or you can open up a shell and run the command
+```
+
+1. You can't add or remove initcontainers in a pod once it is created
+2. For the pod to start running all the init container should be completed first
+
+Since we added a 2nd init container the pod requires two service to be up running
+
+```
+k create deploy db-deploy --image=redis --port=80
+k expose deploy db-deploy --name mydb --port 80
+
+```
+
+so to continually watch a change use '-w' 
+```
+k get pods -w
+```
+##### Sidecar / helper container
