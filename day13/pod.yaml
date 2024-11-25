@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: "2024-11-25T02:43:40Z"
+  labels:
+    run: nginx
+    tier: frontend
+    type: app1
+  name: nginx
+  namespace: default
+  resourceVersion: "4187"
+  uid: 3c87931a-5766-4a1a-97b8-2759217b1013
+spec:
+  containers:
+  - image: nginx
+    name: nginx
+  nodeName: kubernetes-worker
+    

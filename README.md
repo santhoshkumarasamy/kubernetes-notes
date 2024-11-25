@@ -570,3 +570,38 @@ So Daemon sets are kind of similar to replica sets but it is used for specific t
 Daemon sets create a replica of the service in each node when a new node is added to the cluster and when a node is deleted the daemon sets replica will also be deleted
 
 Daemon set create replicas in each node available in the cluster
+
+#### Cron jobs
+https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/
+
+#### Jobs
+
+https://kubernetes.io/docs/concepts/workloads/controllers/job/
+
+
+### Day 13
+
+#### Static pods
+
+etcd
+api server
+scheduler
+control manager
+
+these are the static pods and these are run by the kubelet in the control plane node only 
+
+manifest of these can be found on 
+/etc/kubernetes/manifests/
+
+kubelet in the master node (control plane nod) monitors this
+
+#### Manual Scheduling
+
+scheduler is responsible for new pods creation / allocation
+
+Schedular only cares about the pods which doesnot have the selector "nodeName"
+
+Once a pod is scheduled and running in a node, we can't move to an another node
+we have to delete the pod and create a new pod
+
+Even if the schedular is not there, but the nodename is specified in the manifest, then the pod will be scheduled in that particular node
