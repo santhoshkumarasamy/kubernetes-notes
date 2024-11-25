@@ -557,3 +557,16 @@ so to continually watch a change use '-w'
 k get pods -w
 ```
 ##### Sidecar / helper container
+
+### Day 12
+
+#### Daemon sets
+
+So Daemon sets are kind of similar to replica sets but it is used for specific tasks, such as
+1. Running monitoring agents 
+2. Networking things : kube proxy, weave-net(CNI plugin)
+3. logging agent
+
+Daemon sets create a replica of the service in each node when a new node is added to the cluster and when a node is deleted the daemon sets replica will also be deleted
+
+Daemon set create replicas in each node available in the cluster
