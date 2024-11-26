@@ -605,3 +605,82 @@ Once a pod is scheduled and running in a node, we can't move to an another node
 we have to delete the pod and create a new pod
 
 Even if the schedular is not there, but the nodename is specified in the manifest, then the pod will be scheduled in that particular node
+
+
+#### Selector
+
+k get pods --selector tier=frontend
+
+use the labels mentioned in the pod level to filter 
+
+### Day 14
+
+#### Taint is on Node
+#### Toleration is on POD
+
+Taint is a condition set a node and if pod meets the condition by having the toleration then the pod will be scheduled on the node
+
+it is a key and value pair
+
+Along with toleration in a pod config, there is something called as "effect"
+
+There 3 different effect
+
+1. noSchedule
+2. preferNoschedule
+3. noExecute
+
+##### noSchedule
+Means the taint and toleration will effect on the newer pods 
+
+##### noExecute
+means this will apply to existing and new pods
+if an existing pod does not tolerate the taint the pod will be evicted
+
+##### preferNoschedule
+it tries to apply the taint (tolerate) but there is no garuntee
+
+#### Taint command 
+```
+# k taint node [nodename] key=value:[effect]
+
+k taint node kubernetes-worker gpu=true:NoSchedule
+```
+
+So if all nodes in the cluster has a taint and if you try to create a pod without toleration you will see the below message in log
+![](./notes/Taint%20error.png)
+
+you cant add toleration to a pod in cli
+
+To remove the taint use the create command with "-" at the end
+
+```
+k taint node kubernetes-worker gpu=true:NoSchedule-
+```
+Adding Taint to a node and toleration to a pod does not always garuntee that the pod will always run on the tolerated node
+see the bellow image, the pods has toleration to run the kubernetes-worker node but it is running on the kubernetes-worker2 node
+the kubernetes-worker2 node doesn't have the taint
+
+![](./notes/Taint%20does%20not%20garuntee%20pod%20placement.png)
+
+#### This were selector and labels come 
+
+Add "nodeSelector" property under "Spec" of the pod config
+
+if no node in the cluster have this label then the pod wont be schedules, you will get the be message
+
+![](./notes/NodeSelector%20Error.png)
+
+So lets add a label to the node
+
+```
+k label node kubernetes-worker gpu=false
+```
+
+Even if a node has the label, the pod wont be scheduled if the node has a taint that is not tolerated by the pod
+
+to remove a label from a node 
+
+k label node [nodename] [labelname]-
+```
+k label node kubernetes-worker gpu-
