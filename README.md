@@ -684,3 +684,31 @@ to remove a label from a node
 k label node [nodename] [labelname]-
 ```
 k label node kubernetes-worker gpu-
+```
+
+### Day 15
+
+#### Node afinity
+
+Affinity if kind of selector and label mentioned above but the difference is, in the above you can only have match condition but in affinity you can have
+1. =
+2. in
+3. != (not equal to)
+
+Lets say when a pod was scheduled with an affinity, during the scheduling the node had the label.
+After that the label was removed,
+now what will happen
+
+to determine that we have two configs
+
+1. requiredDuringSchedulingIgnoredDuringExecution - node is important for the pod
+2. preferredDuringSchedulingIngnoredDuringExecution - scheduling is important for the pod
+
+in both this cases after the pod is executed, affinity doesnt play a role here
+only when a pod is scheduled the affinity is matters
+
+for preferredDuringSchedulingIgnoredDuringExecution even if the conditions not met the pod will be scheduled
+
+
+![](./notes/day15%20Affinity%20Error.png)
+
