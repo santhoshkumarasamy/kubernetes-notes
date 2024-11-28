@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: mem-demo
+  name: mem-demo-2
+  namespace: mem-example
+spec:
+  containers:
+  - image: polinux/stress
+    name: mem-demo-ctr-2
+    resources:
+      requests:
+        memory: "50Mi"
+      limits:
+        memory: "75Mi"
+    command: ["stress"]
+    args: ["--vm", "1", "--vm-bytes", "100M", "--vm-hang", "1"]
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always

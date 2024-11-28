@@ -712,3 +712,16 @@ for preferredDuringSchedulingIgnoredDuringExecution even if the conditions not m
 
 ![](./notes/day15%20Affinity%20Error.png)
 
+### Day 16
+
+insufficient resources
+OOM - out of memory
+OOM killer 
+
+Server metrics is an add-on 
+
+https://kubernetes.io/docs/tasks/debug/debug-cluster/resource-metrics-pipeline/
+
+
+
+![](./notes/OOMkilled.png)

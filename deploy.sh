@@ -1,3 +1,3 @@
 #!/bin/bash
 
-kind create cluster --name kubernetes --config ./day9/cluster-config-v2.yaml
+kind create cluster --name kubernetes --config ./cluster-config-v3.yaml
