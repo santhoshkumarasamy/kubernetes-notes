@@ -725,3 +725,47 @@ https://kubernetes.io/docs/tasks/debug/debug-cluster/resource-metrics-pipeline/
 
 
 ![](./notes/OOMkilled.png)
+
+### Day 17
+
+#### Autoscaling
+
+Increasing the service based on the workload
+
+##### Horizontal Pod Autoscaling 
+
+Adding same pod 
+HPA is the only default thing present in kubernetes
+
+HPA by default monitors the object for 15seconds
+```
+
+kubectl autoscale deployment [deploymentname] --cpu-percent=50 --min=1 --max=10
+
+# to delete 
+
+kubectl delete hpa [hpaName]
+
+# to create the load
+
+kubectl run -i --tty load-generator --rm --image=busybox:1.28 --restart=Never -- /bin/sh -c "while sleep 0.01; do wget -q -O- http://php-apache; done"
+
+
+```
+##### Vertical Pod Autoscaling
+
+Increasing the size of the pod - memory and cpu
+It requires down time for restarting the pod
+
+![](./notes/AutoScalling.png)
+
+
+
+We can have multiple kubernetes objects in a single yaml file
+to separate the objects details add
+
+---
+
+at the end of each object
+
+
