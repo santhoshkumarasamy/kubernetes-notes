@@ -764,8 +764,46 @@ It requires down time for restarting the pod
 We can have multiple kubernetes objects in a single yaml file
 to separate the objects details add
 
----
+'---'
 
 at the end of each object
 
+### Day 19
 
+#### Health Probes
+
+Health probes continuously monitors your application health
+
+##### liveness probe
+
+Restarts the application if fails
+
+##### readiness probe
+
+ensure the pod is ready for serving the network traffic
+
+##### startup probe
+
+for slow/ legacy apps- app that take long time to start
+
+using readiness and liveness probes are suggested in production
+
+
+These probes can do health check with the help of
+* HTTP
+* TCP
+* command
+
+"initialDelaySeconds" time the probes should wait before checking the container status
+
+"periodSeconds" time interval between each check
+
+"failureThreshold" how many times continuis failure can happen before restart
+
+"successThreshold" how many successfull execution needed 
+
+![](./notes/livessprobe-options.png)
+
+default toleration added for liveness
+
+![](./notes/default-toleration%20added%20for%20liveness.png)
