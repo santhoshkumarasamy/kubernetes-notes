@@ -807,3 +807,75 @@ These probes can do health check with the help of
 default toleration added for liveness
 
 ![](./notes/default-toleration%20added%20for%20liveness.png)
+
+### Day 19
+
+### Config maps
+
+So to use a env variable in pod you can give that in a pod config
+
+```yaml
+  env:
+  - name: NAME
+    value: "Santhosh"
+```
+but what if this grows, let say you want add 15 env variable to 10 pods.
+then the config file becomes larger.
+this were configmap comes 
+you can add all the env varible in config map and add it to the pod
+
+To create a config map
+imperative
+```sh
+kubectl create cm app-cm --from-literal=firstname=santhosh \
+  --from-literal=day=19
+```
+
+to add the variable 
+you can add it as a volume and directly as a varible 
+
+```yaml
+env:
+- name: NAME
+  valueFrom:
+    configMapKeyRef:
+      name: app-cm # config map name
+      key: name # name of the variable in config map
+```
+
+this basically inserting the env variables from the config maps
+
+way to create config map from a file
+
+```sh
+# create a config file
+k create cm app-cm --config-from-file=app.config
+```
+
+declarative way to create a config map
+
+```
+apiVersion: v1
+data:
+  name: santhosh
+kind: ConfigMap
+metadata:
+  name: app-cm
+```
+
+in the pod.yaml we refered single varible to be pulled
+
+to pull the whole config into the pod
+
+```yaml
+
+envFrom:
+- configMapRef:
+    name: app-cm #config map name
+
+```
+One more way to add the config map is to mount it as a volume
+
+https://kubernetes.io/docs/concepts/configuration/configmap/
+
+

@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: busy-box
+  name: busy-box
+spec:
+  containers:
+  - image: busybox:1.28
+    name: busy-box
+    env:
+    - name: NAME
+      valueFrom:
+        configMapKeyRef:
+          name: app-cm
+          key: name
+    command: ['sh','-c','echo The app is working && sleep 3600 ']
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
