@@ -878,4 +878,27 @@ One more way to add the config map is to mount it as a volume
 
 https://kubernetes.io/docs/concepts/configuration/configmap/
 
+### Day 21
+
+![](./notes/Certificate-tls.png)
+
+Any file with ".crt, .pem " as extension then it is a certificate
+example
+
+server.crt
+server.pem
+client.crt
+client.pem
+
+Any file with with "key" as entension or ane then it is a private key
+example
+
+server.key
+server-key.pem
+client.key
+client-key.pem
+
+Lets consider a scenario where a new admin has joined a team and this person need access to k8s cluster
+
+check the day 21 folder
 
