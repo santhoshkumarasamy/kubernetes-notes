@@ -901,4 +901,94 @@ client-key.pem
 Lets consider a scenario where a new admin has joined a team and this person need access to k8s cluster
 
 check the day 21 folder
+### Day 22
+
+1.Authentication: API server validates client requests using the kubeconfig file, which contains client certificates. It checks these certificates against the API server’s CA certificates (stored in `/etc/kubernetes/pki`). If the client’s certificate is valid and issued by the API server's CA then client is authenticated.
+
+2. Authorization: Once authenticated, the API server uses RBAC policies (RB,CRB) to determine if the client has necessary permissions to perform the actions within the cluster. It grants or deny access based on these permissions.
+
+![](./notes/Authorization_and-Authentication.png)
+
+all the certificates and keys can be found on
+
+/etc/kubernetes/pki
+
+in the control plane node
+
+### Day 23
+```
+k auth can-i get po
+k auth whoami
+
+k auth can-i get po --as adam # to impersnate as adam
+```
+THere are two different groups in Kuberbetes
+
+* Core group
+* Named group - when ever there is name in version
+
+"" in apiGroup in role mean mentioning the core group
+
+```
+
+k apply -f pod-reader-role.yaml
+
+k get role
+```
+now that we have created a role , we have bind the role with the user
+
+https://kubernetes.io/docs/reference/access-authn-authz/rbac/
+
+check this url for the yaml
+
+```
+k apply -f read-pods-binding.yaml
+
+```
+
+now check whether he has access
+
+```
+k auth can-i get pods --as adam
+
+```
+
+so you get Yes as an output if you get no then you messed up the role or role binding
+
+now let add the user to out local config so we can run command directly 
+
+```
+k config set-credentials adam #username \
+--client-key=adam.key \
+--client-certificate=adam.crt
+```
+
+not let set the context
+```
+k config set-context adam-context --cluster=kind-kubernetes --user=adam
+
+# list the contexts
+
+k config get-contexts
+
+# switch to adam-contexts
+
+k config use-context adam-context
+
+# verify the user
+
+k auth whoami
+
+```
+
+to know a valdity of a certificate
+```
+openssl x509 -noout -dates -in adam.crt
+```
+to view the configs
+```
+k config view
+```
+
+you also call the api server url and get the results
 
