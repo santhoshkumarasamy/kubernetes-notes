@@ -926,7 +926,7 @@ THere are two different groups in Kuberbetes
 
 * Core group
 * Named group - when ever there is name in version
-
+* Roles are scoped under a namespaces
 "" in apiGroup in role mean mentioning the core group
 
 ```
@@ -991,4 +991,53 @@ k config view
 ```
 
 you also call the api server url and get the results
+
+### Day 24
+
+namespace scoped
+* pods
+* deployment
+* services
+* rs
+
+cluster scoped
+* namespaces
+* nodes
+
+
+CLuster Role - is at alust at level
+
+Cluster Role bindings = role binding but binding it to cluster role
+
+to find the resources ar namespace scope
+
+```sh
+k api-resources --namespaced=true
+
+# to get cluster level
+
+
+k api-resources --namespaced=true
+```
+
+Now lets create a cluster role and asign the role to the new user(adam)
+
+```sh
+k create clusterrole --help
+k create clusterrole node-reader --verb=get,watch,list --resource=node
+# now lets assign to the user
+k create clusterrolebinding --help
+
+k create clusterrolebinding node-read --clusterrole=node-reader --user=adam
+
+```
+make sure dry run it and see the yaml file
+
+now lets test the binding
+
+```
+k auth can-i get nodes --as adam
+```
+now the user should be able to access the nodes but he should be able to delete cause he doesnt have the permission
+
 
