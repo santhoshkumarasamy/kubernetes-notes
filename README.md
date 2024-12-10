@@ -1040,4 +1040,45 @@ k auth can-i get nodes --as adam
 ```
 now the user should be able to access the nodes but he should be able to delete cause he doesnt have the permission
 
+### Day 25
+
+Service accounts are basically a user account but used by an application like bots, monitoring tools
+
+```sh
+k get sa #service account
+k get sa -A
+```
+
+by default there are many service accounts created
+
+to create a service account
+```sh
+kubectl create sa [name]
+k get sa [name] -o yaml #to view the yaml
+```
+
+to create long lived token for service account
+
+https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#manually-create-a-long-lived-api-token-for-a-serviceaccount
+
+now lets add role and role binding to the service account
+
+```sh
+k create role build-role \
+--verb=get,list,watch \
+--resource=pod
+
+k create rolebinding sa-build-rb \
+--user=build-sa \
+--role=build-role
+```
+
+
+/var/run/secrets/kubernetes.io/serviceaccount
+
+where the secrets will be mounted to a pod
+
+```sh
+k delete sa build-sa
+```
 
