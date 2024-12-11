@@ -1082,3 +1082,57 @@ where the secrets will be mounted to a pod
 k delete sa build-sa
 ```
 
+### Day 26
+
+#### Network Policies
+
+by default all the nodes are able to communicate with eachother
+this done with the help of `CNI` - *Container Network Interface*
+
+Some example CNI are
+* weave-net
+* flannel
+* calico
+* cilium
+
+k get ds [deamonset] -A
+
+Add this to Kind cluster config to disable the default kind-net CNI
+```yaml
+networking:
+  disableDefaultCNI: true
+```
+
+soon when you create this new cluster you will notice the nodes status will be ""NotReady"
+![](./notes/day26-cni-error.png)
+
+so lets install weavenet cni in out cluster
+
+https://kubernetes.io/docs/tasks/administer-cluster/network-policy-provider/weave-network-policy/
+
+https://github.com/weaveworks/weave/blob/master/site/kubernetes/kube-addon.md#-installation
+```
+kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml
+
+```
+
+now apply the 3 tier app manifest
+
+all the pods will be able to communicate by default 
+now lets restrict the access by applying network policy
+
+we can write both ingress and egress network policy
+
+after applying the network policy 
+you wont be able to telnet from frontend pod to the db pod
+```
+k get netpol # or networkpolicy
+```
+okay seems like weave net was abandoned
+lets do this with calico CNI
+
+https://docs.tigera.io/calico/latest/getting-started/kubernetes/kind#create-a-multi-node-kind-cluster
+
+you update the network policy
+
+*note create deny rules for all the network for pod first then create allow rule for network*
