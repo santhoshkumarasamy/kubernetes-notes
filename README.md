@@ -1136,3 +1136,21 @@ https://docs.tigera.io/calico/latest/getting-started/kubernetes/kind#create-a-mu
 you update the network policy
 
 *note create deny rules for all the network for pod first then create allow rule for network*
+
+### Day 27
+
+#### Setting up kubernetes multi node cluster with kubeadm in Virtual machines
+
+![](./notes/day27-waystoinstall.png)
+
+![](./notes/day27-installkubernetes.png)
+
+https://kubernetes.io/docs/reference/networking/ports-and-protocols/
+
+![](./notes/day27-ports.png)
+
+To reset everything done in a node
+
+```
+sudo kubeadm reset
+```
