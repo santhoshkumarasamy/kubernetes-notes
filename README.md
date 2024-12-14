@@ -1154,3 +1154,33 @@ To reset everything done in a node
 ```
 sudo kubeadm reset
 ```
+
+### Day 28
+
+#### Docker volume
+
+![](./notes/day28-container-storage.png)
+
+Storage driver: responsibel for the read-only layer and the container layer
+
+volume driver: resposible for making the volume persistent
+```
+docker volume create data_vol
+
+docker volume ls
+```
+
+/var/lib/docker 
+
+this where the docker stores everything
+```
+docker run -v data_vol:/var/lib/ -dp 3000:3000 day27-todo
+```
+this a mount type of volume
+
+there is an another mount type called `bind`
+```
+docker run --mount type=bind,src=<host-path>,dst=<container-path>
+docker run --volume <host-path>:<container-path>
+```
+
