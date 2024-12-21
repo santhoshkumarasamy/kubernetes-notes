@@ -1183,4 +1183,40 @@ there is an another mount type called `bind`
 docker run --mount type=bind,src=<host-path>,dst=<container-path>
 docker run --volume <host-path>:<container-path>
 ```
+### Day 29
 
+#### volume types
+
+##### empty dir
+```yaml
+spec:
+  volumes:
+  - name:redis-storage
+    emptyDir: {}
+```
+ this is a temprory storage which is persitent till the lifecycle of the the pod not the container
+
+so when we delete the pod and recreate it whatever you put it in the mounted storage will be gone
+
+but if the restarts the dat will be persitent
+
+![](./notes/day29-pv.png)
+
+#### Persistent Volumes
+
+max : 100Gi
+
+pv - persistent volume
+pvc - persistent volume claim
+
+when a Pvc is attached to a pod it will check with the PV and if the conditions met - storage size and read write mode 
+a binding will be created between the pv and pvc. this binding is responsible for attaching the volume pv to the pod
+
+lets say there is 100Gi pv and a 10Gi pvc is been made in pod, then the binding will take of the connection and the pv will be now 90Gi since the 10Gi is claimed by a pod through PVC
+
+let say 80Gi of a pv of size 100Gi is being used and new pvc requires a 40Gi now this the PVC will be stuck in pending state since there is not enough space in pv and pod also will be in pending state.
+
+this can also happen if the readwrite mode of the pv and pvc doesnt match
+
+
+in pv and pvc make sure specify storage class

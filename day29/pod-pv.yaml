@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: nginx
+  name: nginx
+spec:
+  containers:
+  - image: nginx
+    name: nginx
+    ports:
+      - containerPort: 80
+        name: "http-server"
+    volumeMounts:
+    - name: nginx-storage # we reffering the volume to be attached to the path
+      mountPath: "/usr/share/nginx/html" # this is path inside the container
+  volumes:
+  - name: nginx-storage
+    persistentVolumeClaim:
+      claimName: task-pv-claim

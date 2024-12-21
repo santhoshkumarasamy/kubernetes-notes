@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: redis
+  name: redis
+spec:
+  containers:
+  - image: redis
+    name: redis
+    resources: {}
+    volumeMounts:
+    - name: redis-storage # we reffering the volume to be attached to the path
+      mountPath: /data/redis # this is path inside the container
+  volumes:
+  - name: redis-storage
+    emptyDir: {} # this is one of the volume type and this storage is persistent till the lifecycle of the pod not the container
